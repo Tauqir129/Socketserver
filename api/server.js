@@ -1,21 +1,27 @@
 const { Server } = require("socket.io");
 const http = require("http");
+const cors = require("cors");
+const express = require("express");
 
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { "Content-Type": "text/plain" });
-  res.end("Socket.io server running");
-});
+const app = express();
+app.use(cors());
+
+const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: "*", // Replace with your frontend URL for better security
     methods: ["GET", "POST"]
   }
 });
 
+app.get("/", (req, res) => {
+  res.send("Socket.io server running");
+});
+
 io.on("connection", (socket) => {
   console.log("A user connected");
-
+  
   socket.on("message", (msg) => {
     console.log("Message received: ", msg);
     socket.broadcast.emit("message", msg);
@@ -31,7 +37,5 @@ server.listen(3000, () => {
 });
 
 module.exports = (req, res) => {
-  if (req.method === 'GET') {
-    res.status(200).send('Socket.io server running');
-  }
+  res.send("Socket.io server running");
 };
