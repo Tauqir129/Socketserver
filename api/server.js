@@ -4,7 +4,7 @@ const cors = require("cors");
 const express = require("express");
 
 const app = express();
-app.use(cors());
+app.use(cors()); // Enable CORS for all requests
 
 const server = http.createServer(app);
 
@@ -15,10 +15,7 @@ const io = new Server(server, {
   }
 });
 
-app.get("/", (req, res) => {
-  res.send("Socket.io server running");
-});
-
+// Your Socket.io logic
 io.on("connection", (socket) => {
   console.log("A user connected");
 
@@ -32,10 +29,8 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3000, () => {
-  console.log("Server listening on port 3000");
-});
+const port = process.env.PORT || 3000;
 
-module.exports = (req, res) => {
-  res.send("Socket.io server running");
-};
+server.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
+});
